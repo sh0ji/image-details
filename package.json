@@ -1,0 +1,72 @@
+{
+  "name": "image-details",
+  "version": "0.1.0",
+  "description": "Tools for image descriptions.",
+  "keywords": [
+    "image",
+    "details",
+    "aria",
+    "aria-details",
+    "details element",
+    "summary element",
+    "alt text",
+    "image description",
+    "longdesc"
+  ],
+  "license": "MIT",
+  "author": "Evan Yamanishi",
+  "main": "lib/index.js",
+  "files": [
+    "lib"
+  ],
+  "scripts": {
+    "build": "tsc -p .",
+    "lint:es": "eslint '**/*.{js,jsx,ts,tsx}' --ignore-path .gitignore",
+    "test": "nyc ava"
+  },
+  "eslintConfig": {
+    "env": {
+      "browser": true
+    },
+    "extends": [
+      "airbnb-base",
+      "plugin:import/typescript",
+      "plugin:@typescript-eslint/recommended"
+    ],
+    "rules": {
+      "@typescript-eslint/indent": [
+        "error",
+        "tab"
+      ],
+      "@typescript-eslint/no-empty-interface": "off",
+      "import/extensions": [
+        "error",
+        "ignorePackages",
+        {
+          "js": "never",
+          "ts": "never"
+        }
+      ],
+      "indent": "off",
+      "lines-between-class-members": [
+        "error",
+        "always",
+        {
+          "exceptAfterSingleLine": true
+        }
+      ],
+      "no-tabs": "off"
+    }
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^2.19.2",
+    "@typescript-eslint/parser": "^2.19.2",
+    "ava": "^3.3.0",
+    "eslint": "^6.8.0",
+    "eslint-config-airbnb-base": "^14.0.0",
+    "eslint-plugin-import": "^2.20.1",
+    "nyc": "^15.0.0",
+    "standard-version": "^7.1.0",
+    "typescript": "^3.7.5"
+  }
+}
