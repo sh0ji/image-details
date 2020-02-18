@@ -3,7 +3,7 @@ export interface DetailsContents {
 	contents: HTMLElement | ChildNode[] | null;
 }
 
-const parse = async (details: HTMLDetailsElement): Promise<DetailsContents> => {
+const parseDetails = async (details: HTMLDetailsElement): Promise<DetailsContents> => {
 	const summary = details.querySelector('summary');
 	let contents: null | HTMLElement | ChildNode[];
 
@@ -28,4 +28,4 @@ const parse = async (details: HTMLDetailsElement): Promise<DetailsContents> => {
 	return { summary, contents };
 };
 
-export default parse;
+export default parseDetails;

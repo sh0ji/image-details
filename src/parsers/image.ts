@@ -6,7 +6,7 @@ export interface ImageContents {
 	descriptions: Partial<DescriptionRecord>;
 }
 
-const parse = async (image: HTMLImageElement): Promise<ImageContents> => {
+const parseImage = async (image: HTMLImageElement): Promise<ImageContents> => {
 	const d = await getAllDescriptions(image);
 	const hasLongDescription = d.some(([, desc]) => desc);
 	const descriptions: Partial<DescriptionRecord> = {};
@@ -23,4 +23,4 @@ const parse = async (image: HTMLImageElement): Promise<ImageContents> => {
 	};
 };
 
-export default parse;
+export default parseImage;
