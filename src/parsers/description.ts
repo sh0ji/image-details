@@ -5,20 +5,72 @@ export enum DescriptionAttribute {
 	LONGDESC = 'longdesc',
 }
 
-export type Description = HTMLElement | DocumentFragment | string | null;
+export type Description = (HTMLElement | ChildNode)[] | string | null;
 export type DescriptionTuple = [DescriptionAttribute, Description];
 export type DescriptionRecord = Record<DescriptionAttribute, Description>;
 
 /** Take an attribute value and return a Promised description. */
-export type DescriptionParser = (
-	attrVal: string,
-) => Promise<Description>;
+export type DescriptionParser = (attrVal: string) => Promise<Description>;
 
 /** Define a description parser for a specified attribute. */
 export interface AttributeParser {
 	attr: DescriptionAttribute;
 	parser: DescriptionParser;
 }
+
+const fromEl = (node: HTMLElement | null): HTMLElement[] | null => ((node) ? [node] : null);
+
+const filterTagNames = (...tagNames: string[]) => (n: Node): boolean => {
+	if (n instanceof HTMLElement) {
+		return tagNames.some((tagName) => tagName.toUpperCase() === n.tagName.toUpperCase());
+	}
+	return false;
+};
+
+type NodeFilter = (n: Node) => boolean;
+
+/** Fetch an array of nodes from a given url. Returns `null` if nothing is found. */
+export const fetchNodes = async (
+	url: string,
+	init?: Parameters<typeof fetch>[1],
+	filters: NodeFilter[] = [
+		filterTagNames('script', 'style'),
+	],
+): Promise<(HTMLElement | ChildNode)[] | null> => {
+	const req = new Request(url);
+	const { hash, origin, pathname } = new URL(req.url);
+	const currentPage = window.location.origin + window.location.pathname;
+
+	// same-page reference
+	if ((origin + pathname) === currentPage) {
+		return fromEl(document.querySelector<HTMLElement>(hash));
+	}
+
+	// reference to another page
+	const res = await fetch(req, init);
+	if (res.status === 200) {
+		const html = await res.text();
+
+		const parser = new DOMParser();
+		const doc = parser.parseFromString(html, 'text/html');
+
+		// a fragment on another page
+		if (hash) return fromEl(doc.querySelector<HTMLElement>(hash));
+
+		// the body doesn't have any contents
+		if (doc.body.firstChild === null) return null;
+
+		const contents: ChildNode[] = [];
+		Array.from(doc.body.childNodes).forEach((node) => {
+			if (!filters.some((test) => test(node))) {
+				contents.push(node);
+			}
+		});
+		return contents;
+	}
+
+	return null;
+};
 
 /**
  * Parser for the `aria-details` attribute.
@@ -27,7 +79,7 @@ export interface AttributeParser {
  */
 export const ariaDetails: AttributeParser = {
 	attr: DescriptionAttribute.ARIA_DETAILS,
-	parser: async (val: string) => document.getElementById(val),
+	parser: async (val: string) => fromEl(document.getElementById(val)),
 };
 
 /**
@@ -39,21 +91,7 @@ export const ariaDetails: AttributeParser = {
  */
 export const longdesc: AttributeParser = {
 	attr: DescriptionAttribute.LONGDESC,
-	parser: async (ref: string) => {
-		if (ref.startsWith('#')) return document.querySelector(ref) as HTMLElement;
-		const res = await fetch(ref);
-		if (res.status === 200) {
-			const html = await res.json();
-			const parser = new DOMParser();
-			const doc = parser.parseFromString(html, 'text/html');
-			const frag = new DocumentFragment();
-			Array.from(doc.body.children).forEach((node) => {
-				frag.appendChild(node);
-			});
-			return frag;
-		}
-		return null;
-	},
+	parser: fetchNodes,
 };
 
 /**
@@ -80,6 +118,17 @@ export const getDescription = (
 	return parser(val);
 };
 
+/** Turn a `Description` into an HTML string. */
+export const flattenDescription = (description: Description): string | null => {
+	if (!description) return null;
+	if (typeof description === 'string') return description;
+	const el = document.createElement('div');
+	description.forEach((node) => {
+		el.append(node.cloneNode(true));
+	});
+	return el.innerHTML;
+};
+
 /**
  * Get image descriptions for all attribute parsers.
  *
@@ -87,28 +136,17 @@ export const getDescription = (
  */
 export const getAllDescriptions = (
 	image: HTMLImageElement,
+	/** Indicates that descriptions should be flattened to HTML strings. */
+	htmlStrings = false,
 ): Promise<DescriptionTuple[]> => {
-	const allParsers = [
-		ariaDescribedby,
-		ariaDetails,
-		longdesc,
-	];
+	const allParsers = [ariaDescribedby, ariaDetails, longdesc];
 
-	return Promise.all(allParsers.map(async ({
-		attr,
-		parser,
-	}): Promise<[DescriptionAttribute, Description]> => [
-		attr,
-		await getDescription(image, { attr, parser }),
-	]));
-};
-
-/** Turn a `Description` into an HTML string. */
-export const flattenDescription = (description: Description): string | null => {
-	if (!description) return null;
-	if (typeof description === 'string') return description;
-	if (description instanceof HTMLElement) return description.innerHTML;
-	const el = document.createElement('div');
-	el.appendChild(description);
-	return el.innerHTML;
+	return Promise.all(
+		allParsers.map(
+			async ({ attr, parser }): Promise<[DescriptionAttribute, Description]> => {
+				const desc = await getDescription(image, { attr, parser });
+				return [attr, (htmlStrings) ? flattenDescription(desc) : desc];
+			},
+		),
+	);
 };
