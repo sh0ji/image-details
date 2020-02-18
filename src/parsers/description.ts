@@ -108,6 +108,12 @@ export const ariaDescribedby: AttributeParser = {
 	},
 };
 
+export const ALL_DESCRIPTIONS = [
+	ariaDescribedby,
+	ariaDetails,
+	longdesc,
+];
+
 /** Get the image description with the specified attribute parser. */
 export const getDescription = (
 	image: HTMLImageElement,
@@ -138,15 +144,11 @@ export const getAllDescriptions = (
 	image: HTMLImageElement,
 	/** Indicates that descriptions should be flattened to HTML strings. */
 	htmlStrings = false,
-): Promise<DescriptionTuple[]> => {
-	const allParsers = [ariaDescribedby, ariaDetails, longdesc];
-
-	return Promise.all(
-		allParsers.map(
-			async ({ attr, parser }): Promise<[DescriptionAttribute, Description]> => {
-				const desc = await getDescription(image, { attr, parser });
-				return [attr, (htmlStrings) ? flattenDescription(desc) : desc];
-			},
-		),
-	);
-};
+): Promise<DescriptionTuple[]> => Promise.all(
+	ALL_DESCRIPTIONS.map(
+		async ({ attr, parser }): Promise<[DescriptionAttribute, Description]> => {
+			const desc = await getDescription(image, { attr, parser });
+			return [attr, (htmlStrings) ? flattenDescription(desc) : desc];
+		},
+	),
+);
