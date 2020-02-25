@@ -1,2 +1,2 @@
-export { parse as parseImage } from './parsers/image';
-export * from './parsers/description';
+export { default as ImageOverlay } from './enhancements/ImageOverlay';
+export { default as ImageModal } from './enhancements/ImageModal';
