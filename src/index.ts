@@ -1,2 +1,7 @@
-export { default as ImageOverlay } from './enhancements/ImageOverlay';
-export { default as ImageModal } from './enhancements/ImageModal';
+import ImageModal from './enhancements/ImageModal';
+import ImageOverlay from './enhancements/ImageOverlay';
+
+export {
+	ImageModal,
+	ImageOverlay,
+};
