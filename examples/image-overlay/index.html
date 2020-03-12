@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Image Overlay</title>
+    <link rel="stylesheet" href="index.scss" />
+  </head>
+  <body>
+    <main>
+      <div class="text">
+        <h1>Image Overlay</h1>
+        <p>
+          The following figure uses the <code>aria-details</code> attribute to
+          point to a long description elsewhere on the page.
+
+        </p>
+      </div>
+      <figure class="example">
+        <img
+          class="img-fluid"
+          src="https://picsum.photos/1080/718"
+          alt="A randomly-loaded image from Unsplash."
+          aria-details="details"
+        />
+        <figcaption>Example 1: <code>aria-details</code></figcaption>
+      </figure>
+      <figure class="example">
+        <img
+          class="img-fluid"
+          src="https://picsum.photos/1080/719"
+          alt="A second randomly-loaded image from Unsplash."
+          aria-describedby="details"
+        />
+        <figcaption>Example 2: <code>aria-describedby</code></figcaption>
+      </figure>
+      <figure class="example">
+        <img
+          class="img-fluid"
+          src="https://picsum.photos/1080/720"
+          alt="A second randomly-loaded image from Unsplash."
+          longdesc="longdesc-1.html"
+        />
+        <figcaption>Example 3: <code>longdesc</code></figcaption>
+      </figure>
+      <figure class="example">
+        <img
+          class="img-fluid"
+          src="https://picsum.photos/1080/721"
+          alt="A randomly-loaded image from Unsplash."
+        />
+        <figcaption>Example 1 with only alt text</figcaption>
+      </figure>
+      <figure class="example">
+        <img
+          class="img-fluid"
+          src="https://picsum.photos/1080/722"
+          alt="A second randomly-loaded image from Unsplash."
+        />
+        <figcaption>Example 2 with only alt text</figcaption>
+      </figure>
+      <figure class="example">
+        <img
+          class="img-fluid"
+          src="https://picsum.photos/1080/723"
+          alt=""
+        />
+        <figcaption>Example without alt text or long description</figcaption>
+      </figure>
+      <div class="text">
+        <div class="sr-only" id="details">
+          <p>
+            Lorem ipsum dolor sit amet <a href="#">consectetur adipisicing elit</a>. Voluptatem
+            minus ad sit ex, rerum saepe explicabo dolor adipisci optio in
+            libero quos ipsam harum maiores porro quasi hic aliquid labore.
+          </p>
+          <p>
+            Temporibus qui, soluta aliquam iure beatae, magnam laboriosam vel
+            ratione, obcaecati eveniet consequuntur quos placeat corrupti
+            reiciendis itaque dicta sit distinctio officiis inventore?
+            Necessitatibus vitae sunt earum non eius ipsam.
+          </p>
+          <p>
+            Laborum pariatur iusto eius inventore, vel dicta id ab debitis illo
+            dolor numquam nostrum hic sint iure natus, eligendi quis assumenda.
+            Enim, iste aperiam. Sint soluta quisquam distinctio maxime quae?
+          </p>
+        </div>
+      </div>
+    </main>
+    <script src="./index.ts"></script>
+  </body>
+</html>
