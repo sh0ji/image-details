@@ -13,6 +13,12 @@
     "image description",
     "longdesc"
   ],
+  "homepage": "https://github.com/sh0ji/image-details",
+  "bugs": "https://github.com/sh0ji/image-details/issues",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sh0ji/image-details.git"
+  },
   "license": "MIT",
   "author": "Evan Yamanishi",
   "main": "lib/index.js",
@@ -20,42 +26,22 @@
     "lib"
   ],
   "scripts": {
-    "build": "tsc -p .",
+    "build": "rm -rf dist && parcel build src/index.ts",
+    "dev": "parcel watch src/index.ts",
+    "examples": "parcel examples/index.html examples/**/longdesc*.html",
     "lint:es": "eslint '**/*.{js,jsx,ts,tsx}' --ignore-path .gitignore",
     "test": "nyc ava"
   },
   "eslintConfig": {
-    "env": {
-      "browser": true
-    },
     "extends": [
-      "airbnb-base",
-      "plugin:import/typescript",
-      "plugin:@typescript-eslint/recommended"
+      "airbnb-base"
     ],
     "rules": {
-      "@typescript-eslint/indent": [
+      "indent": [
         "error",
         "tab"
       ],
-      "@typescript-eslint/no-empty-interface": "off",
-      "import/extensions": [
-        "error",
-        "ignorePackages",
-        {
-          "js": "never",
-          "ts": "never"
-        }
-      ],
-      "indent": "off",
-      "lines-between-class-members": [
-        "error",
-        "always",
-        {
-          "exceptAfterSingleLine": true
-        }
-      ],
-      "no-tabs": "off"
+      "no-tabs": 0
     }
   },
   "devDependencies": {
@@ -65,8 +51,12 @@
     "eslint": "^6.8.0",
     "eslint-config-airbnb-base": "^14.0.0",
     "eslint-plugin-import": "^2.20.1",
+    "fibers": "^4.0.2",
+    "modern-normalize": "^0.6.0",
     "nyc": "^15.0.0",
+    "parcel-bundler": "^1.12.4",
+    "sass": "^1.26.3",
     "standard-version": "^7.1.0",
-    "typescript": "^3.7.5"
+    "typescript": "^3.8.3"
   }
 }
