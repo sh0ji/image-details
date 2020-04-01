@@ -28,8 +28,9 @@
   "scripts": {
     "build": "rm -rf dist && parcel build src/index.ts",
     "dev": "parcel watch src/index.ts",
-    "examples": "parcel examples/index.html examples/**/longdesc*.html",
+    "examples": "parcel examples/index.html examples/**/longdesc*.html --out-dir public",
     "lint:es": "eslint '**/*.{js,jsx,ts,tsx}' --ignore-path .gitignore",
+    "pages": "parcel build examples/index.html examples/**/longdesc*.html --out-dir public",
     "test": "nyc ava"
   },
   "eslintConfig": {
