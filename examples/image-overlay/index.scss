@@ -34,20 +34,17 @@
 }
 
 .overlaid__summary {
+	@include summary-contrast;
+
 	display: inline-flex;
 	align-content: center;
 	position: absolute;
 	right: 0;
-	padding: 1rem;
+	padding: var(--grid-gutter);
 
 	&:focus {
 		@include summary-contrast;
 	}
-}
-
-.overlaid__details[open] .overlaid__summary {
-	color: rgb(var(--dark));
-	background-color: transparent;
 }
 
 .overlaid__marker {
@@ -62,40 +59,17 @@
 }
 
 .overlaid__contents {
-	padding: 0 1rem;
+	padding: var(--grid-gutter);
 }
 
 .overlaid__details[open] {
 	box-shadow: var(--overlay-shadow);
-}
+	z-index: 1000;
 
-.overlaid__details[open] .overlaid__summary {
-	background-color: transparent;
-	color: black;
-}
-
-.overlaid__details[open] .overlaid__contents {
-  transition: height var(--duration-collapse) var(--easing-standard);
-}
-
-.overlaid__details[open] .overlaid__marker {
-  transition: transform var(--duration-collapse) var(--easing-standard);
-}
-
-.overlaid__details[open] .overlaid__marker.right {
-  transform: rotate(180deg);
-}
-
-.overlaid__details[open] .overlaid__marker.right.closing {
-  transform: rotate(90deg);
-}
-
-.overlaid__details[open] .overlaid__marker.up {
-  transform: rotate3d(1, 0, 0, 180deg);
-}
-
-.overlaid__details[open] .overlaid__marker.up.closing {
-  transform: rotate3d(1, 0, 0, 0);
+	.overlaid__summary {
+		color: rgb(var(--dark));
+		background-color: transparent;
+	}
 }
 
 @media screen and (prefers-reduced-motion: reduce) {
