@@ -1,15 +1,61 @@
 @use '../node_modules/modern-normalize/modern-normalize.css';
 
+:root {
+    --grid-gutter: 1rem;
+}
+
+main {
+    padding: var(--grid-gutter) var(--grid-gutter) 0;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    margin-top: 0;
+}
+
 .text {
-    width: percentage(4 / 12);
-    margin: 0 auto;
+    margin-left: var(--grid-gutter);
+    margin-right: var(--grid-gutter);
 }
 
 .example {
-    width: percentage(6 / 12);
-    margin: 0 auto;
-    padding: 2rem;
+    margin-left: calc(-1 * var(--grid-gutter));
+    width: calc(100% + (2 * var(--grid-gutter)));
+    padding: calc(2 * var(--grid-gutter));
     background-color: #ededed;
+}
+
+@media screen and (min-width: 576px) {
+}
+
+@media screen and (min-width: 768px) {
+    .text {
+        width: percentage(8 / 12);
+        margin: 0 auto;
+    }
+    .example {
+        width: percentage(10 / 12);
+        margin: 0 auto calc(2 * var(--grid-gutter));
+    }
+}
+
+@media screen and (min-width: 992px) {
+    .text {
+        width: percentage(7 / 12);
+        margin: 0 auto;
+    }
+    .example {
+        width: percentage(8 / 12);
+    }
+}
+
+@media screen and (min-width: 1200px) {
+    .text {
+        width: percentage(4 / 12);
+        margin: 0 auto;
+    }
+    .example {
+        width: percentage(5 / 12);
+    }
 }
 
 .example img {
