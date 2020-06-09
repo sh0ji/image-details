@@ -29,7 +29,7 @@ export interface DraggablePosition {
 	left: number | null;
 }
 
-class Draggable {
+export class Draggable {
 	public options: Required<DraggableOptions>;
 	private moveX = 0;
 	private moveY = 0;
@@ -106,17 +106,14 @@ class Draggable {
 		if (this.grabbed) {
 			this.drag(e);
 		} else {
-			const {
-				excludedElements,
-				excludeFocusable,
-			} = this.options;
+			const { excludedElements, excludeFocusable } = this.options;
 
-			const excludedElements = [
+			const excluded = [
 				...((typeof excludedElements === 'function') ? excludedElements(this.el) : excludedElements),
 				...((excludeFocusable) ? Array.from(getFocusable(this.el)) : []),
 			].filter((el) => el && e.composedPath().includes(el));
 
-			this.canGrab = !excludedElements.some(Boolean);
+			this.canGrab = !excluded.some(Boolean);
 		}
 	};
 
