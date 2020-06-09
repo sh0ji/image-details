@@ -88,8 +88,8 @@ export class ImageOverlay {
 	public descriptionAttribute!: DescriptionAttribute | null;
 	private originalImage!: HTMLImageElement;
 	private enabled = false;
-	private hasAdjacentDetails = false;
-	private existingDetailsDescription = false;
+	// private hasAdjacentDetails = false;
+	// private existingDetailsDescription = false;
 
 	protected constructor(
 		image: HTMLImageElement,
@@ -178,7 +178,7 @@ export class ImageOverlay {
 
 		if (this.description) {
 			if (this.description instanceof HTMLDetailsElement) {
-				this.existingDetailsDescription = true;
+				// this.existingDetailsDescription = true;
 			}
 			if (screenReaderOnly && this.description.classList.contains(screenReaderOnly)) {
 				this.description.classList.remove(screenReaderOnly);
@@ -189,7 +189,7 @@ export class ImageOverlay {
 
 		// next element is a <details>
 		if (nextElementSibling && nextElementSibling instanceof HTMLDetailsElement) {
-			this.hasAdjacentDetails = true;
+			// this.hasAdjacentDetails = true;
 			// next element is the description or contains it
 			if (
 				this.description
