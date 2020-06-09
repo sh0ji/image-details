@@ -68,7 +68,7 @@ export enum DescriptionAttribute {
 	LONGDESC = 'longdesc',
 }
 
-class Describer {
+export class Describer {
 	public attr: DescriptionAttribute;
 	public parser: (val: string) => Promise<HTMLElement | null>;
 
@@ -115,8 +115,6 @@ class Describer {
 		return new Describer(attr).getDescription(el);
 	}
 }
-
-export default Describer;
 
 export interface Description {
 	attr: DescriptionAttribute | null;
