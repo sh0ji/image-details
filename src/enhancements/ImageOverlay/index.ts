@@ -75,7 +75,7 @@ interface EnhanceAllOptions extends ImageOverlayOptions, ImageOverlayClasses {
 
 const ImageOverlayInstances = new Set<ImageOverlay>();
 
-class ImageOverlay {
+export class ImageOverlay {
 	public options: Required<ImageOverlayOptions & ImageOverlayClasses>;
 	public image: HTMLImageElement;
 	public description?: HTMLElement | null;
@@ -388,5 +388,3 @@ class ImageOverlay {
 		closeOnEscape: true,
 	}
 }
-
-export default ImageOverlay;

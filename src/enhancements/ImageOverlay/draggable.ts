@@ -167,6 +167,4 @@ class Draggable {
 	}
 }
 
-export default Draggable;
-
 export const { makeDraggable } = Draggable;
