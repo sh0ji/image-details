@@ -28,7 +28,7 @@
   ],
   "scripts": {
     "build:lib": "rm -rf dist && parcel build src/index.ts",
-    "build:site": "rm -rf docs && parcel build site/index.html --out-dir docs",
+    "build:docs": "rm -rf docs && parcel build site/index.html --out-dir docs",
     "dev": "parcel site/index.html",
     "dev:lib": "parcel src/index.ts",
     "lint:es": "eslint '**/*.{js,jsx,ts,tsx}' --ignore-path .gitignore",
