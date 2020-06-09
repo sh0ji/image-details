@@ -110,8 +110,7 @@ export class ImageOverlay {
 		this.descriptionAttribute = attr;
 		this.description = desc;
 
-		const { image, description, dragging } = this.options;
-		if (this.description) this.description.classList.add(description);
+		const { image, dragging } = this.options;
 		this.image.classList.add(image);
 
 		this.overlay = this.createOverlay();
