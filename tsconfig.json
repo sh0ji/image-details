@@ -1,17 +1,26 @@
 {
   "compilerOptions": {
-    "target": "ES5",
-    "module": "ESNext",
-    "strict": true,
+    "allowSyntheticDefaultImports": true,
     "declaration": true,
-    "moduleResolution": "Node",
+    "declarationMap": true,
+    "downlevelIteration": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "jsx": "react",
+    "lib": ["DOM", "ESNext"],
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitReturns": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "outDir": "dist",
+    "removeComments": false,
+    "skipLibCheck": false,
     "sourceMap": true,
-    "outDir": "./dist",
-    "rootDir": "./src",
-    "lib": [
-      "dom",
-      "es6"
-    ]
+    "strict": true,
+    "target": "ES2015",
+    "rootDir": "src"
   },
   "include": [
     "src/**/*"
