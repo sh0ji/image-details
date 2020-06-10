@@ -68,58 +68,34 @@ export enum DescriptionAttribute {
 	LONGDESC = 'longdesc',
 }
 
-export class Describer {
-	public attr: DescriptionAttribute;
-	public parser: (val: string) => Promise<HTMLElement | null>;
-
-	public constructor(attr: DescriptionAttribute) {
-		this.attr = attr;
-
-		switch (attr) {
-			case DescriptionAttribute.ARIA_DETAILS:
-			case DescriptionAttribute.ARIA_DESCRIBEDBY:
-				this.parser = async (
-					val: string,
-				): Promise<HTMLElement | null> => {
-					const el = document.getElementById(val);
-					if (el) return el.cloneNode(true) as HTMLElement;
-					return null;
-				};
-				break;
-			case DescriptionAttribute.LONGDESC:
-				this.parser = async (val: string): Promise<HTMLElement | null> => {
-					const contents = await fetchElement(val);
-					if (contents instanceof DocumentFragment) {
-						const el = document.createElement('div');
-						el.append(contents);
-						return el;
-					}
-					return contents;
-				};
-				break;
-			default:
-				throw new Error(`${attr} is not a valid descriptions attribute.`);
-		}
-	}
-
-	public async getDescription(el: HTMLElement): Promise<HTMLElement | null> {
-		const val = el.getAttribute(this.attr);
-		if (!val) return Promise.resolve(null);
-		return this.parser(val);
-	}
-
-	public static async get(
-		el: HTMLElement,
-		attr: DescriptionAttribute,
-	): Promise<HTMLElement | null> {
-		return new Describer(attr).getDescription(el);
-	}
-}
-
 export interface Description {
 	attr: DescriptionAttribute | null;
 	desc: HTMLElement | null;
 }
+
+export const getDescriptionByAttr = async (
+	el: HTMLElement,
+	attr: DescriptionAttribute,
+): Promise<HTMLElement | null> => {
+	const attrValue = el.getAttribute(attr);
+	if (!el.hasAttribute(attr) || !attrValue) return null;
+
+	// longdesc: retrieve the description from a separate document
+	if (attr === DescriptionAttribute.LONGDESC) {
+		const contents = await fetchElement(attrValue);
+		if (contents instanceof DocumentFragment) {
+			const desc = document.createElement('div');
+			desc.append(contents);
+			return desc;
+		}
+		return contents;
+	}
+
+	const ref = document.getElementById(attrValue);
+	if (ref) return ref.cloneNode(true) as HTMLElement;
+	return null;
+};
+
 
 /**
  * Get the image's long description.
@@ -127,25 +103,14 @@ export interface Description {
  * description. Attribute preference is `aria-details` > `longdesc` >
  * `aria-describedby`.
  */
-export const getDescription = async (el: HTMLElement): Promise<Description> => {
-	let attr = null;
-	// 1. aria-details
-	let desc = await Describer.get(el, DescriptionAttribute.ARIA_DETAILS);
-	if (desc) {
-		attr = DescriptionAttribute.ARIA_DETAILS;
-	}
-
-	// 2. longdesc
-	if (!attr) {
-		desc = await Describer.get(el, DescriptionAttribute.LONGDESC);
-		if (desc) attr = DescriptionAttribute.LONGDESC;
-	}
-
-	// 3. aria-describedby
-	if (!attr) {
-		desc = await Describer.get(el, DescriptionAttribute.ARIA_DESCRIBEDBY);
-		if (desc) attr = DescriptionAttribute.ARIA_DESCRIBEDBY;
-	}
-
-	return { attr, desc };
-};
+export const getDescription = async (el: HTMLElement): Promise<{
+	attr: DescriptionAttribute | null;
+	value: HTMLElement | null;
+}[]> => Promise.all(
+	Object.values(DescriptionAttribute)
+		.filter((attr) => el.hasAttribute(attr))
+		.map(async (attr) => ({
+			attr,
+			value: await getDescriptionByAttr(el, attr),
+		})),
+);

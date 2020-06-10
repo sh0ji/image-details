@@ -1,5 +1,6 @@
-import { DescriptionAttribute, getDescription } from '../../utilities/description';
-import { icons, createIcon } from '../../utilities/elements';
+import {
+	DescriptionAttribute, getDescription, icons, createIcon,
+} from '../../utilities';
 import { makeDraggable } from './draggable';
 
 type ImageOverlayAnatomy =
@@ -76,8 +77,6 @@ interface EnhanceAllOptions extends ImageOverlayOptions, ImageOverlayClasses {
 const ImageOverlayInstances = new Set<ImageOverlay>();
 
 export class ImageOverlay {
-	public options: Required<ImageOverlayOptions & ImageOverlayClasses>;
-	public image: HTMLImageElement;
 	public description?: HTMLElement | null;
 	public overlay!: HTMLElement;
 	public details!: HTMLDetailsElement;
@@ -92,12 +91,9 @@ export class ImageOverlay {
 	// private existingDetailsDescription = false;
 
 	protected constructor(
-		image: HTMLImageElement,
-		options: ImageOverlay['options'],
+		public image: HTMLImageElement,
+		public options: Required<ImageOverlayOptions & ImageOverlayClasses>,
 	) {
-		this.image = image;
-		this.options = options;
-
 		ImageOverlayInstances.add(this);
 	}
 
@@ -106,9 +102,12 @@ export class ImageOverlay {
 
 		this.originalImage = this.image.cloneNode() as HTMLImageElement;
 
-		const { attr, desc } = await getDescription(this.image);
-		this.descriptionAttribute = attr;
-		this.description = desc;
+		const descriptions = await getDescription(this.image);
+		if (descriptions.length) {
+			const [{ attr, value }] = descriptions;
+			this.descriptionAttribute = attr;
+			this.description = value;
+		}
 
 		const { image, dragging } = this.options;
 		this.image.classList.add(image);
