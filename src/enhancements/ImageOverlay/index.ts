@@ -102,9 +102,12 @@ export class ImageOverlay {
 
 		this.originalImage = this.image.cloneNode() as HTMLImageElement;
 
-		const { attr, desc } = await getDescription(this.image);
-		this.descriptionAttribute = attr;
-		this.description = desc;
+		const descriptions = await getDescription(this.image);
+		if (descriptions.length) {
+			const [{ attr, value }] = descriptions;
+			this.descriptionAttribute = attr;
+			this.description = value;
+		}
 
 		const { image, dragging } = this.options;
 		this.image.classList.add(image);
