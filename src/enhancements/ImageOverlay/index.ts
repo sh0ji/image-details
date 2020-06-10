@@ -1,5 +1,6 @@
-import { DescriptionAttribute, getDescription } from '../../utilities/description';
-import { icons, createIcon } from '../../utilities/elements';
+import {
+	DescriptionAttribute, getDescription, icons, createIcon,
+} from '../../utilities';
 import { makeDraggable } from './draggable';
 
 type ImageOverlayAnatomy =
