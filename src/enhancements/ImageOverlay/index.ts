@@ -77,8 +77,6 @@ interface EnhanceAllOptions extends ImageOverlayOptions, ImageOverlayClasses {
 const ImageOverlayInstances = new Set<ImageOverlay>();
 
 export class ImageOverlay {
-	public options: Required<ImageOverlayOptions & ImageOverlayClasses>;
-	public image: HTMLImageElement;
 	public description?: HTMLElement | null;
 	public overlay!: HTMLElement;
 	public details!: HTMLDetailsElement;
@@ -93,12 +91,9 @@ export class ImageOverlay {
 	// private existingDetailsDescription = false;
 
 	protected constructor(
-		image: HTMLImageElement,
-		options: ImageOverlay['options'],
+		public image: HTMLImageElement,
+		public options: Required<ImageOverlayOptions & ImageOverlayClasses>,
 	) {
-		this.image = image;
-		this.options = options;
-
 		ImageOverlayInstances.add(this);
 	}
 
