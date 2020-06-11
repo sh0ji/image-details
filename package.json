@@ -28,7 +28,8 @@
   ],
   "scripts": {
     "build:lib": "rm -rf dist && parcel build src/index.ts",
-    "build:docs": "rm -rf docs && parcel build site/index.html --out-dir public --public-url /image-details/",
+    "build:docs": "rm -rf public && parcel build site/index.html --out-dir public --public-url /image-details/",
+    "build:examples": "rm -rf examples && parcel build site/index.html --out-dir examples --no-minify",
     "dev": "parcel site/index.html",
     "dev:lib": "parcel src/index.ts",
     "lint:es": "eslint '**/*.{js,jsx,ts,tsx}' --ignore-path .gitignore",
