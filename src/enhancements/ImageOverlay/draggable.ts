@@ -1,5 +1,9 @@
-import { getFocusable } from '../../utilities/elements';
-import { setStyle, noop } from '../../utilities/misc';
+import { getFocusable, setStyle, noop } from '../../utilities';
+
+export interface DraggablePosition {
+	top: number | null;
+	left: number | null;
+}
 
 interface DraggableOptions {
 	/**
@@ -19,16 +23,6 @@ interface DraggableOptions {
 	onRelease?: () => void;
 }
 
-export interface DraggableOptionsRequired {
-	el: HTMLElement;
-	keyboardEl: HTMLElement;
-}
-
-export interface DraggablePosition {
-	top: number | null;
-	left: number | null;
-}
-
 export class Draggable {
 	public options: Required<DraggableOptions>;
 	private moveX = 0;
@@ -38,8 +32,8 @@ export class Draggable {
 
 	protected constructor(
 		public el: HTMLElement,
-		public keyboardEl: HTMLElement,
-		options?: DraggableOptions,
+		public keyboardEl: HTMLElement | null,
+		options?: Partial<DraggableOptions>,
 	) {
 		this.options = { ...Draggable.defaultOptions, ...options };
 
@@ -48,7 +42,9 @@ export class Draggable {
 		this.el.addEventListener('pointermove', this.pointermove);
 		this.el.addEventListener('pointerup', this.release);
 
-		this.keyboardEl.addEventListener('keydown', this.moveWithKeyboard);
+		if (this.keyboardEl) {
+			this.keyboardEl.addEventListener('keydown', this.moveWithKeyboard);
+		}
 	}
 
 	public move(x: number, y: number): void {
@@ -157,9 +153,10 @@ export class Draggable {
 		onRelease: noop,
 	};
 
-	public static makeDraggable(
-		{ el, keyboardEl, ...options }: DraggableOptionsRequired & DraggableOptions,
-	): Draggable {
+	public static makeDraggable({ el, keyboardEl, ...options }: DraggableOptions & {
+		el: HTMLElement;
+		keyboardEl: HTMLElement | null;
+	}): Draggable {
 		return new Draggable(el, keyboardEl, options);
 	}
 }

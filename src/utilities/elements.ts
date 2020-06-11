@@ -72,3 +72,15 @@ export const focusableSelectors = [
 export const getFocusable = (
 	el: HTMLElement | Document | ShadowRoot = document,
 ): NodeListOf<HTMLElement> => el.querySelectorAll(focusableSelectors.join(','));
+
+export const appendContent = (to: HTMLElement, ...contents: (string | Node)[]): void => {
+	contents.forEach((content) => {
+		if (typeof content === 'string') {
+			const div = document.createElement('div');
+			div.innerHTML = content;
+			to.append(div.firstChild as ChildNode);
+		} else {
+			to.append(content);
+		}
+	});
+};

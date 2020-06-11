@@ -70,7 +70,7 @@ export enum DescriptionAttribute {
 
 export interface Description {
 	attr: DescriptionAttribute | null;
-	desc: HTMLElement | null;
+	value: HTMLElement | null;
 }
 
 export const getDescriptionByAttr = async (
@@ -103,10 +103,7 @@ export const getDescriptionByAttr = async (
  * description. Attribute preference is `aria-details` > `longdesc` >
  * `aria-describedby`.
  */
-export const getDescription = async (el: HTMLElement): Promise<{
-	attr: DescriptionAttribute | null;
-	value: HTMLElement | null;
-}[]> => Promise.all(
+export const getDescription = async (el: HTMLElement): Promise<Description[]> => Promise.all(
 	Object.values(DescriptionAttribute)
 		.filter((attr) => el.hasAttribute(attr))
 		.map(async (attr) => ({
