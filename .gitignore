@@ -105,6 +105,3 @@ public
 
 # Stores VSCode versions used for testing VSCode extensions
 .vscode-test
-
-# Builds should only be included when published
-lib
