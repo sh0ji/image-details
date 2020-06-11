@@ -117,22 +117,7 @@ parcelRequire = (function (modules, cache, entry, globalName) {
   }
 
   return newRequire;
-})({"etm4":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.ImageModal = void 0;
-/**
- * TODO: implement an enhancement that displays the image and its description in
- * a modal dialog interface.
- */
-
-class ImageModal {}
-
-exports.ImageModal = ImageModal;
-},{}],"kT6y":[function(require,module,exports) {
+})({"kT6y":[function(require,module,exports) {
 "use strict";
 
 var __awaiter = this && this.__awaiter || function (thisArg, _arguments, P, generator) {
@@ -279,7 +264,7 @@ exports.getDescription = el => __awaiter(void 0, void 0, void 0, function* () {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.getFocusable = exports.focusableSelectors = exports.createIcon = exports.icons = void 0;
+exports.appendContent = exports.getFocusable = exports.focusableSelectors = exports.createIcon = exports.icons = void 0;
 const materialViewBox = '0 0 24 24';
 exports.icons = {
   details: {
@@ -319,25 +304,18 @@ exports.createIcon = ({
 exports.focusableSelectors = ['[contentEditable=true]:not([tabindex="-1"])', '[tabindex]:not([tabindex="-1"])', 'a[href]:not([tabindex="-1"])', 'button:not([disabled]):not([tabindex="-1"])', 'dialog', 'embed:not([tabindex="-1"])', 'iframe:not([tabindex="-1"])', 'input:not([disabled]):not([tabindex="-1"])', 'map[name] area[href]:not([tabindex="-1"])', 'object:not([tabindex="-1"])', 'select:not([disabled]):not([tabindex="-1"])', 'summary:not([tabindex="-1"])', 'textarea:not([disabled]):not([tabindex="-1"])'];
 
 exports.getFocusable = (el = document) => el.querySelectorAll(exports.focusableSelectors.join(','));
-},{}],"j3te":[function(require,module,exports) {
-"use strict";
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.noop = exports.setStyle = void 0;
-
-const styleString = style => Object.keys(style).reduce((a, attr) => {
-  const val = style[attr];
-  return val ? "".concat(a, " ").concat(attr, ": ").concat(val, ";") : a;
-}, '').trim();
-
-exports.setStyle = (el, style) => {
-  el.setAttribute('style', styleString(style));
-}; // eslint-disable-next-line @typescript-eslint/no-empty-function
-
-
-exports.noop = () => {};
+exports.appendContent = (to, ...contents) => {
+  contents.forEach(content => {
+    if (typeof content === 'string') {
+      const div = document.createElement('div');
+      div.innerHTML = content;
+      to.append(div.firstChild);
+    } else {
+      to.append(content);
+    }
+  });
+};
 },{}],"AMii":[function(require,module,exports) {
 "use strict";
 
@@ -361,13 +339,321 @@ var __exportStar = this && this.__exportStar || function (m, exports) {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.srOnly = exports.setStyle = exports.noop = void 0;
 
 __exportStar(require("./description"), exports);
 
-__exportStar(require("./elements"), exports);
+__exportStar(require("./elements"), exports); // eslint-disable-next-line @typescript-eslint/no-empty-function
 
-__exportStar(require("./misc"), exports);
-},{"./description":"kT6y","./elements":"kr1d","./misc":"j3te"}],"IrGc":[function(require,module,exports) {
+
+exports.noop = () => {};
+
+const styleString = style => Object.keys(style).reduce((a, attr) => {
+  const val = style[attr];
+  return val ? "".concat(a, " ").concat(attr, ": ").concat(val, ";") : a;
+}, '').trim();
+
+exports.setStyle = (el, style) => {
+  el.setAttribute('style', styleString(style));
+};
+
+exports.srOnly = el => exports.setStyle(el, {
+  position: 'absolute',
+  width: '1px',
+  height: '1px',
+  padding: '0',
+  margin: '-1px',
+  overflow: 'hidden',
+  clip: 'rect(0, 0, 0, 0)',
+  whiteSpace: 'nowrap',
+  border: '0'
+});
+},{"./description":"kT6y","./elements":"kr1d"}],"ni5T":[function(require,module,exports) {
+"use strict";
+
+var __awaiter = this && this.__awaiter || function (thisArg, _arguments, P, generator) {
+  function adopt(value) {
+    return value instanceof P ? value : new P(function (resolve) {
+      resolve(value);
+    });
+  }
+
+  return new (P || (P = Promise))(function (resolve, reject) {
+    function fulfilled(value) {
+      try {
+        step(generator.next(value));
+      } catch (e) {
+        reject(e);
+      }
+    }
+
+    function rejected(value) {
+      try {
+        step(generator["throw"](value));
+      } catch (e) {
+        reject(e);
+      }
+    }
+
+    function step(result) {
+      result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected);
+    }
+
+    step((generator = generator.apply(thisArg, _arguments || [])).next());
+  });
+};
+
+var __rest = this && this.__rest || function (s, e) {
+  var t = {};
+
+  for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0) t[p] = s[p];
+
+  if (s != null && typeof Object.getOwnPropertySymbols === "function") for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
+    if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i])) t[p[i]] = s[p[i]];
+  }
+  return t;
+};
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.ImageDetails = void 0;
+
+const utilities_1 = require("../../utilities");
+
+const ImageDetailsInstances = new Set();
+
+class ImageDetails {
+  constructor(image, options) {
+    this.image = image;
+    this.options = options;
+    this.descriptionSection = null;
+    this.descriptionAttribute = null;
+    this.originalDetails = null;
+    this.descriptionAdded = false;
+    this.originalImage = this.image.cloneNode(true);
+    this.image.classList.add(this.getClass('image'));
+    this.container = this.createContainer();
+    this.details = this.createDetails();
+    this.container.append(this.image, this.details);
+    ImageDetailsInstances.add(this);
+  }
+
+  get hasDescription() {
+    return Object.values(utilities_1.DescriptionAttribute).some(attr => this.image.getAttribute(attr));
+  }
+
+  addDescription(description) {
+    return __awaiter(this, void 0, void 0, function* () {
+      if (this.descriptionAdded) return;
+      const {
+        descriptionHeading,
+        onGetDescription = utilities_1.noop
+      } = this.options;
+
+      if (description) {
+        this.description = description;
+      } else {
+        const descriptions = yield utilities_1.getDescription(this.image);
+        onGetDescription.call(this, descriptions);
+
+        if (descriptions.length) {
+          const [{
+            attr,
+            value
+          }] = descriptions;
+          this.descriptionAttribute = attr;
+          this.description = value;
+        }
+      }
+
+      if (this.description && this.descriptionSection) {
+        utilities_1.appendContent(this.descriptionSection, descriptionHeading(), this.description);
+        this.descriptionAdded = true;
+      }
+    });
+  }
+
+  destroy() {
+    (this.container.parentNode || document).insertBefore(this.originalImage, this.container);
+
+    if (this.originalDetails) {
+      const {
+        detailsPlacement
+      } = this.options;
+      const refChild = detailsPlacement === 'after-image' ? this.originalImage.nextSibling : this.originalImage;
+      (this.originalImage.parentNode || document).insertBefore(this.originalDetails, refChild);
+    }
+
+    this.container.remove();
+    ImageDetailsInstances.delete(this);
+    return this;
+  } // element constructors
+
+
+  createContainer() {
+    if (this.container) return this.container;
+    const {
+      blockName
+    } = this.options;
+    const {
+      parentElement
+    } = this.image;
+    const container = parentElement instanceof HTMLElement && parentElement.classList.contains(blockName) ? parentElement : document.createElement('div');
+    container.classList.add(blockName);
+    if (container.contains(this.image)) return container; // append to the document
+
+    (parentElement || document).insertBefore(container, this.image);
+    return container;
+  }
+
+  createDetails() {
+    if (this.details) return this.details;
+    const {
+      detailsPlacement
+    } = this.options;
+    let details = document.createElement('details');
+    const detailsCandidate = detailsPlacement === 'after-image' ? this.image.nextElementSibling : this.image.previousElementSibling;
+
+    if (detailsCandidate instanceof HTMLDetailsElement) {
+      // `img + details` already exists so use it, storing a copy of the original
+      this.originalDetails = detailsCandidate.cloneNode(true);
+      details = detailsCandidate;
+    } else {
+      // add the new details to the document
+      const refChild = detailsPlacement === 'after-image' ? this.image.nextSibling : this.image;
+      (this.image.parentNode || document).insertBefore(details, refChild); // create the summary
+
+      this.summary = this.createSummary();
+      details.prepend(this.summary); // create the summary marker
+
+      this.marker = this.createMarker();
+      this.summary.prepend(this.marker); // create the contents
+
+      this.contents = this.createContents();
+      details.append(this.contents);
+    }
+
+    details.classList.add(this.getClass('details'));
+    return details;
+  }
+
+  createSummary() {
+    const {
+      displaySummaryText,
+      summaryText
+    } = this.options;
+    const summary = document.createElement('summary');
+    summary.classList.add(this.getClass('summary'));
+    const text = summaryText(this.hasDescription);
+    const span = document.createElement('span');
+    utilities_1.appendContent(span, text);
+    if (!displaySummaryText) utilities_1.srOnly(span);
+    summary.append(span);
+    return summary;
+  }
+
+  createMarker() {
+    const {
+      summaryMarker
+    } = this.options;
+    const innerMarker = summaryMarker();
+    const marker = document.createElement('span');
+    marker.classList.add(this.getClass('marker'));
+    if (innerMarker) marker.append(innerMarker);
+    return marker;
+  }
+
+  createContents() {
+    const {
+      addAltText
+    } = this.options;
+    const contents = document.createElement('div');
+    contents.classList.add(this.getClass('contents'));
+    if (addAltText) contents.append(this.createAltSection());
+    contents.append(this.createDescriptionSection());
+    return contents;
+  }
+
+  createAltSection() {
+    const {
+      altSectionHeading
+    } = this.options;
+    const section = document.createElement('section');
+    section.classList.add(this.getClass('alt'));
+    section.setAttribute('aria-hidden', 'true');
+    utilities_1.appendContent(section, altSectionHeading(), "<p>".concat(this.image.alt, "</p>"));
+    return section;
+  }
+
+  createDescriptionSection() {
+    const section = document.createElement('section');
+    section.classList.add(this.getClass('desc'));
+    this.descriptionSection = section;
+    return section;
+  }
+
+  getClass(element, asSelector = false) {
+    const {
+      blockName
+    } = this.options;
+    const className = "".concat(blockName, "__").concat(element);
+    if (asSelector) return ".".concat(className);
+    return className;
+  }
+
+  static enhance(image, options) {
+    return __awaiter(this, void 0, void 0, function* () {
+      const opts = Object.assign(Object.assign({}, ImageDetails.defaultOptions), options);
+      const hasDesc = Object.values(utilities_1.DescriptionAttribute).some(attr => image.getAttribute(attr));
+      if (!hasDesc && !image.alt) return null;
+      const instance = new ImageDetails(image, opts);
+      yield instance.addDescription();
+      return instance;
+    });
+  }
+
+  static enhanceAll(_a = {}) {
+    var {
+      selector = 'img'
+    } = _a,
+        options = __rest(_a, ["selector"]);
+
+    return __awaiter(this, void 0, void 0, function* () {
+      yield Promise.all(Array.from(document.querySelectorAll(selector)).map(el => __awaiter(this, void 0, void 0, function* () {
+        return ImageDetails.enhance(el, options);
+      })));
+      return ImageDetails.instances;
+    });
+  }
+
+  static get instances() {
+    return Array.from(ImageDetailsInstances);
+  }
+
+}
+
+exports.ImageDetails = ImageDetails; // private hasAdjacentDetails = false;
+// private existingDetailsDescription = false;
+
+ImageDetails.baseName = 'image-details';
+ImageDetails.defaultOptions = {
+  addAltText: true,
+  detailsPlacement: 'after-image',
+  displaySummaryText: true,
+  closeOnEscape: true,
+  altSectionHeading: () => '<h2>Alt Text</h2>',
+  descriptionHeading: () => '<h2>Image Description</h2>',
+  summaryMarker: () => null,
+  summaryText: hasDescription => {
+    let text = 'Description';
+    if (!hasDescription) text += ' (only alt text)';
+    return text;
+  },
+  blockName: 'image-details',
+  onGetDescription: utilities_1.noop
+};
+},{"../../utilities":"AMii"}],"IrGc":[function(require,module,exports) {
 "use strict";
 
 var __rest = this && this.__rest || function (s, e) {
@@ -386,9 +672,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.makeDraggable = exports.Draggable = void 0;
 
-const elements_1 = require("../../utilities/elements");
-
-const misc_1 = require("../../utilities/misc");
+const utilities_1 = require("../../utilities");
 
 class Draggable {
   constructor(el, keyboardEl, options) {
@@ -432,7 +716,7 @@ class Draggable {
           excludedElements,
           excludeFocusable
         } = this.options;
-        const excluded = [...(typeof excludedElements === 'function' ? excludedElements(this.el) : excludedElements), ...(excludeFocusable ? Array.from(elements_1.getFocusable(this.el)) : [])].filter(el => el && e.composedPath().includes(el));
+        const excluded = [...(typeof excludedElements === 'function' ? excludedElements(this.el) : excludedElements), ...(excludeFocusable ? Array.from(utilities_1.getFocusable(this.el)) : [])].filter(el => el && e.composedPath().includes(el));
         this.canGrab = !excluded.some(Boolean);
       }
     };
@@ -478,7 +762,10 @@ class Draggable {
     this.el.addEventListener('pointerleave', this.release);
     this.el.addEventListener('pointermove', this.pointermove);
     this.el.addEventListener('pointerup', this.release);
-    this.keyboardEl.addEventListener('keydown', this.moveWithKeyboard);
+
+    if (this.keyboardEl) {
+      this.keyboardEl.addEventListener('keydown', this.moveWithKeyboard);
+    }
   }
 
   move(x, y) {
@@ -488,7 +775,7 @@ class Draggable {
     } = this.pos;
 
     if (top !== null && left !== null) {
-      misc_1.setStyle(this.el, {
+      utilities_1.setStyle(this.el, {
         position: 'absolute',
         left: "".concat(left + x, "px"),
         top: "".concat(top + y, "px")
@@ -499,7 +786,7 @@ class Draggable {
   }
 
   resetPosition() {
-    misc_1.setStyle(this.el, {
+    utilities_1.setStyle(this.el, {
       position: null,
       top: null,
       left: null
@@ -533,13 +820,13 @@ exports.Draggable = Draggable;
 Draggable.defaultOptions = {
   excludedElements: [],
   excludeFocusable: true,
-  onDrag: misc_1.noop,
-  onGrab: misc_1.noop,
-  onMove: misc_1.noop,
-  onRelease: misc_1.noop
+  onDrag: utilities_1.noop,
+  onGrab: utilities_1.noop,
+  onMove: utilities_1.noop,
+  onRelease: utilities_1.noop
 };
 exports.makeDraggable = Draggable.makeDraggable;
-},{"../../utilities/elements":"kr1d","../../utilities/misc":"j3te"}],"tPG0":[function(require,module,exports) {
+},{"../../utilities":"AMii"}],"tPG0":[function(require,module,exports) {
 "use strict";
 
 var __awaiter = this && this.__awaiter || function (thisArg, _arguments, P, generator) {
@@ -590,6 +877,8 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.ImageOverlay = void 0;
 
+const ImageDetails_1 = require("../ImageDetails");
+
 const utilities_1 = require("../../utilities");
 
 const draggable_1 = require("./draggable");
@@ -597,37 +886,44 @@ const draggable_1 = require("./draggable");
 const ImageOverlayInstances = new Set();
 
 class ImageOverlay {
-  // private hasAdjacentDetails = false;
-  // private existingDetailsDescription = false;
   constructor(image, options) {
     this.image = image;
     this.options = options;
     this.enabled = false;
+    this.ImageDetails = null;
 
     this.onToggle = () => {
+      if (!this.ImageDetails) return;
       const {
-        draggable,
-        resizable
+        draggableClass,
+        resizableClass
       } = this.options;
+      const {
+        details,
+        marker
+      } = this.ImageDetails;
 
-      if (this.details.open) {
-        this.details.classList.add(draggable);
-        this.details.classList.add(resizable);
+      if (details.open) {
+        details.classList.add(draggableClass);
+        details.classList.add(resizableClass);
+        marker.innerHTML = utilities_1.createIcon(utilities_1.icons.close).outerHTML;
       } else {
-        this.details.classList.remove(draggable);
-        this.details.classList.remove(resizable);
-        this.details.removeAttribute('style');
+        details.classList.remove(draggableClass);
+        details.classList.remove(resizableClass);
+        details.removeAttribute('style');
+        marker.innerHTML = utilities_1.createIcon(utilities_1.icons.details).outerHTML;
       }
-
-      this.updateMarker();
     };
 
     this.onDocumentKeydown = e => {
-      if (e.key !== 'Escape') return;
+      if (!this.ImageDetails || e.key !== 'Escape') return;
       const {
-        closeOnEscape
+        closeAllOnEscape
       } = this.options;
-      if (closeOnEscape) this.details.open = false;
+      const {
+        details
+      } = this.ImageDetails;
+      if (closeAllOnEscape) details.removeAttribute('open');
     };
 
     ImageOverlayInstances.add(this);
@@ -636,47 +932,41 @@ class ImageOverlay {
   enable() {
     return __awaiter(this, void 0, void 0, function* () {
       if (this.enabled) return;
-      this.originalImage = this.image.cloneNode();
-      const descriptions = yield utilities_1.getDescription(this.image);
-
-      if (descriptions.length) {
-        const [{
-          attr,
-          value
-        }] = descriptions;
-        this.descriptionAttribute = attr;
-        this.description = value;
-      }
-
+      this.ImageDetails = yield ImageDetails_1.ImageDetails.enhance(this.image, {
+        blockName: 'overlaid',
+        displaySummaryText: false,
+        summaryMarker: () => utilities_1.createIcon(utilities_1.icons.details)
+      });
+      if (!this.ImageDetails) return;
       const {
-        image,
-        dragging
+        details,
+        summary
+      } = this.ImageDetails;
+      const {
+        draggingClass
       } = this.options;
-      this.image.classList.add(image);
-      this.overlay = this.createOverlay();
-      this.details = this.createDetails();
-      this.summary = this.createSummary();
-      this.marker = this.createMarker();
-      this.contents = this.createContents(this.details);
       draggable_1.makeDraggable({
-        el: this.details,
-        keyboardEl: this.summary,
+        el: details,
+        keyboardEl: summary,
         onDrag: () => {
-          this.details.classList.add(dragging);
+          details.classList.add(draggingClass);
         },
         onRelease: () => {
-          this.details.classList.remove(dragging);
+          details.classList.remove(draggingClass);
         }
       });
-      this.details.addEventListener('toggle', this.onToggle);
+      details.addEventListener('toggle', this.onToggle);
       document.addEventListener('keydown', this.onDocumentKeydown);
       this.enabled = true;
     });
   }
 
   disable() {
-    if (!this.enabled) return this;
-    this.details.removeEventListener('toggle', this.onToggle);
+    if (!this.enabled || !this.ImageDetails) return this;
+    const {
+      details
+    } = this.ImageDetails;
+    details.removeEventListener('toggle', this.onToggle);
     document.removeEventListener('keydown', this.onDocumentKeydown);
     this.enabled = false;
     return this;
@@ -684,172 +974,18 @@ class ImageOverlay {
 
   destroy() {
     if (this.enabled) this.disable();
-    (this.overlay.parentNode || document).insertBefore(this.originalImage, this.overlay);
-    this.overlay.remove();
+    if (this.ImageDetails) this.ImageDetails.destroy();
     ImageOverlayInstances.delete(this);
     return this;
   }
 
-  createOverlay() {
-    if (this.overlay && this.overlay instanceof HTMLElement) return this.overlay;
-    const {
-      overlay: overlayClass
-    } = this.options;
-    const {
-      parentElement
-    } = this.image;
-    const overlay = parentElement instanceof HTMLElement && parentElement.classList.contains(overlayClass) ? parentElement : document.createElement('div');
-    overlay.classList.add(overlayClass);
-    if (overlay.contains(this.image)) return overlay; // append to the document
-
-    (parentElement || document).insertBefore(overlay, this.image);
-    overlay.append(this.image);
-    return overlay;
-  }
-
-  createDetails() {
-    if (this.details instanceof HTMLDetailsElement) return this.details;
-    const {
-      detailsPlacement,
-      screenReaderOnly,
-      details: detailsClass
-    } = this.options;
-
-    if (this.description) {
-      if (this.description instanceof HTMLDetailsElement) {// this.existingDetailsDescription = true;
-      }
-
-      if (screenReaderOnly && this.description.classList.contains(screenReaderOnly)) {
-        this.description.classList.remove(screenReaderOnly);
-      }
-    }
-
-    const {
-      nextElementSibling
-    } = this.image; // next element is a <details>
-
-    if (nextElementSibling && nextElementSibling instanceof HTMLDetailsElement) {
-      // this.hasAdjacentDetails = true;
-      // next element is the description or contains it
-      if (this.description && (nextElementSibling === this.description || nextElementSibling.contains(this.description))) {
-        nextElementSibling.classList.add(detailsClass);
-        return nextElementSibling;
-      } // TODO: handle adjacent <details> that aren't the description?
-
-    }
-
-    const details = document.createElement('details');
-    details.classList.add(detailsClass); // add to the document
-
-    const refChild = detailsPlacement === 'after-image' ? this.image.nextSibling : this.image;
-    (this.image.parentNode || document).insertBefore(details, refChild);
-    return details;
-  }
-
-  createSummary() {
-    const {
-      summary: summaryClass,
-      displaySummaryText,
-      summaryText
-    } = this.options;
-    const existingSummary = this.details.querySelector('summary');
-
-    if (existingSummary) {
-      existingSummary.classList.add(summaryClass);
-      return existingSummary;
-    }
-
-    const summary = document.createElement('summary');
-    summary.classList.add(summaryClass);
-    const text = typeof summaryText === 'string' ? summaryText : summaryText(Boolean(this.description));
-
-    if (displaySummaryText) {
-      summary.append(text);
-    } else {
-      summary.setAttribute('aria-label', text);
-      summary.setAttribute('title', text);
-    } // add to the document
-
-
-    this.details.prepend(summary);
-    return summary;
-  }
-
-  createMarker() {
-    const {
-      marker: markerClass
-    } = this.options;
-    const marker = document.createElement('span');
-    marker.classList.add(markerClass); // add to the document
-
-    this.summary.prepend(this.updateMarker(marker));
-    return marker;
-  }
-
-  updateMarker(marker = this.marker) {
-    const {
-      summaryMarker
-    } = this.options;
-
-    if (typeof summaryMarker === 'object' && 'open' in summaryMarker) {
-      // remove current child and add the updated one
-      while (marker.firstChild) marker.firstChild.remove();
-
-      const {
-        open,
-        closed
-      } = summaryMarker;
-      marker.append(this.details.open ? open : closed);
-      return marker;
-    }
-
-    if (!marker.children.length) marker.append(summaryMarker);
-    return marker;
-  }
-
-  createContents(details) {
-    const {
-      addAltText,
-      contents: contentsClass
-    } = this.options;
-    const contents = document.createElement('div');
-    contents.classList.add(contentsClass);
-    const descSection = this.createDescSection();
-    if (addAltText) contents.append(this.createAltSection());
-    if (descSection) contents.append(descSection); // add to the details
-
-    details.append(contents);
-    return contents;
-  }
-
-  createAltSection() {
-    const {
-      altText: altClass,
-      altSectionHeading
-    } = this.options;
-    const section = document.createElement('section');
-    section.classList.add(altClass);
-    section.setAttribute('aria-hidden', 'true');
-    section.innerHTML = "".concat(altSectionHeading, "<p>").concat(this.image.alt, "</p>");
-    return section;
-  }
-
-  createDescSection() {
-    if (!this.description) return null;
-    const {
-      descriptionHeading,
-      description: descClass
-    } = this.options;
-    const section = document.createElement('section');
-    section.classList.add(descClass);
-    section.innerHTML = descriptionHeading;
-    section.append(this.description);
-    return section;
+  get isOpen() {
+    return this.ImageDetails ? this.ImageDetails.details.open : false;
   }
 
   static enhance(image, options) {
     return __awaiter(this, void 0, void 0, function* () {
-      const opts = Object.assign(Object.assign(Object.assign({}, ImageOverlay.defaultOptions), ImageOverlay.defaultClasses), options);
+      const opts = Object.assign(Object.assign({}, ImageOverlay.defaultOptions), options);
       const hasDesc = Object.values(utilities_1.DescriptionAttribute).some(attr => image.getAttribute(attr));
       if (!hasDesc && !image.alt) return null;
       const instance = new ImageOverlay(image, opts);
@@ -860,7 +996,7 @@ class ImageOverlay {
 
   static enhanceAll(_a = {}) {
     var {
-      selector = ImageOverlay.selector
+      selector = 'img'
     } = _a,
         options = __rest(_a, ["selector"]);
 
@@ -879,45 +1015,112 @@ class ImageOverlay {
 }
 
 exports.ImageOverlay = ImageOverlay;
-ImageOverlay.selector = 'img';
-ImageOverlay.baseName = 'overlaid';
-ImageOverlay.defaultClasses = {
-  overlay: ImageOverlay.baseName,
-  image: "".concat(ImageOverlay.baseName, "__image"),
-  details: "".concat(ImageOverlay.baseName, "__details"),
-  summary: "".concat(ImageOverlay.baseName, "__summary"),
-  marker: "".concat(ImageOverlay.baseName, "__marker"),
-  contents: "".concat(ImageOverlay.baseName, "__contents"),
-  altText: "".concat(ImageOverlay.baseName, "__alt"),
-  description: "".concat(ImageOverlay.baseName, "__desc"),
-  draggable: "".concat(ImageOverlay.baseName, "--draggable"),
-  resizable: "".concat(ImageOverlay.baseName, "--resizable"),
-  dragging: 'dragging',
-  screenReaderOnly: 'sr-only'
-};
 ImageOverlay.defaultOptions = {
-  addAltText: true,
-  altSectionHeading: '<h2>Alt Text</h2>',
-  descriptionHeading: '<h2>Image Description</h2>',
-  detailsPlacement: 'after-image',
-
-  // getter used for summaryMarker so that icon elements are cloned
-  get summaryMarker() {
-    return {
-      open: utilities_1.createIcon(utilities_1.icons.close),
-      closed: utilities_1.createIcon(utilities_1.icons.details)
-    };
-  },
-
-  summaryText: hasDescription => {
-    let text = 'Description';
-    if (!hasDescription) text += ' (Only alt text)';
-    return text;
-  },
-  displaySummaryText: false,
-  closeOnEscape: true
+  closeAllOnEscape: true,
+  draggingClass: 'dragging',
+  draggableClass: 'draggable',
+  resizableClass: 'resizable'
 };
-},{"../../utilities":"AMii","./draggable":"IrGc"}],"fUdq":[function(require,module,exports) {
+},{"../ImageDetails":"ni5T","../../utilities":"AMii","./draggable":"IrGc"}],"etm4":[function(require,module,exports) {
+"use strict";
+
+var __awaiter = this && this.__awaiter || function (thisArg, _arguments, P, generator) {
+  function adopt(value) {
+    return value instanceof P ? value : new P(function (resolve) {
+      resolve(value);
+    });
+  }
+
+  return new (P || (P = Promise))(function (resolve, reject) {
+    function fulfilled(value) {
+      try {
+        step(generator.next(value));
+      } catch (e) {
+        reject(e);
+      }
+    }
+
+    function rejected(value) {
+      try {
+        step(generator["throw"](value));
+      } catch (e) {
+        reject(e);
+      }
+    }
+
+    function step(result) {
+      result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected);
+    }
+
+    step((generator = generator.apply(thisArg, _arguments || [])).next());
+  });
+};
+
+var __rest = this && this.__rest || function (s, e) {
+  var t = {};
+
+  for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0) t[p] = s[p];
+
+  if (s != null && typeof Object.getOwnPropertySymbols === "function") for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
+    if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i])) t[p[i]] = s[p[i]];
+  }
+  return t;
+};
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.ImageModal = void 0;
+const ImageModalInstances = new Set();
+/**
+ * TODO: implement an enhancement that displays the image and its description in
+ * a modal dialog interface.
+ */
+
+class ImageModal {
+  constructor(image, options) {
+    this.image = image;
+    this.options = options;
+    ImageModalInstances.add(this);
+  }
+
+  static get instances() {
+    return Array.from(ImageModalInstances);
+  }
+
+  static enhance(image, options) {
+    return __awaiter(this, void 0, void 0, function* () {
+      const opts = Object.assign(Object.assign({}, ImageModal.defaultOptions), options);
+      const hasDesc = Object.values(DescriptionAttribute).some(attr => image.getAttribute(attr));
+      if (!hasDesc && !image.alt) return null;
+      const instance = new ImageModal(image, opts);
+      yield instance.enable();
+      return instance;
+    });
+  }
+
+  static enhanceAll(_a = {}) {
+    var {
+      selector = ImageModal.selector
+    } = _a,
+        options = __rest(_a, ["selector"]);
+
+    return __awaiter(this, void 0, void 0, function* () {
+      yield Promise.all(Array.from(document.querySelectorAll(selector)).map(el => __awaiter(this, void 0, void 0, function* () {
+        return ImageModal.enhance(el, options);
+      })));
+      return ImageModal.instances;
+    });
+  }
+
+}
+
+exports.ImageModal = ImageModal;
+ImageModal.selector = 'img';
+ImageModal.defaultOptions = {
+  foo: ''
+};
+},{}],"fUdq":[function(require,module,exports) {
 "use strict";
 
 var __createBinding = this && this.__createBinding || (Object.create ? function (o, m, k, k2) {
@@ -941,10 +1144,14 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-__exportStar(require("./enhancements/ImageModal"), exports);
+__exportStar(require("./enhancements/ImageDetails"), exports);
 
 __exportStar(require("./enhancements/ImageOverlay"), exports);
-},{"./enhancements/ImageModal":"etm4","./enhancements/ImageOverlay":"tPG0"}],"zLsf":[function(require,module,exports) {
+
+__exportStar(require("./enhancements/ImageModal"), exports);
+
+__exportStar(require("./utilities"), exports);
+},{"./enhancements/ImageDetails":"ni5T","./enhancements/ImageOverlay":"tPG0","./enhancements/ImageModal":"etm4","./utilities":"AMii"}],"zLsf":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -955,4 +1162,4 @@ const src_1 = require("../../src");
 
 src_1.ImageOverlay.enhanceAll().then(console.log);
 },{"../../src":"fUdq"}]},{},["zLsf"], null)
-//# sourceMappingURL=/image-overlay.38add4c2.js.map
+//# sourceMappingURL=/image-overlay.2b845640.js.map

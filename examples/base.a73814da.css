@@ -270,6 +270,9 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .example {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   margin-left: calc(-1 * var(--grid-gutter));
   width: calc(100% + (2 * var(--grid-gutter)));
   padding: calc(2 * var(--grid-gutter));
@@ -323,102 +326,4 @@ h1, h2, h3, h4, h5, h6 {
   border: 0 !important;
 }
 
-:root {
-  --light: 255, 255, 255;
-  --dark: 0, 0, 0;
-  --overlay-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
-  --duration-simple: 100ms;
-  --duration-expand: 300ms;
-  --duration-collapse: 250ms;
-  --easing-standard: cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.overlaid {
-  position: relative;
-}
-
-.overlaid__details {
-  display: block;
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 100%;
-  background-color: rgb(var(--light));
-}
-
-.overlaid__details:not(.dragging) {
-  transition: top var(--duration-collapse) var(--easing-standard), left var(--duration-collapse) var(--easing-standard);
-}
-
-.overlaid__summary {
-  color: rgb(var(--light));
-  background-color: rgba(var(--dark), 0.8);
-  display: inline-flex;
-  align-content: center;
-  position: absolute;
-  right: 0;
-  padding: var(--grid-gutter);
-}
-.overlaid__summary:focus {
-  color: rgb(var(--light));
-  background-color: rgba(var(--dark), 0.8);
-}
-
-.overlaid__marker {
-  line-height: 1;
-}
-.overlaid__marker svg {
-  width: 1.25rem;
-  height: 1.25rem;
-  transition: transform var(--duration-expand) var(--easing-standard);
-  transform-origin: center;
-}
-
-.overlaid__contents {
-  padding: var(--grid-gutter);
-}
-
-.overlaid__details[open] {
-  box-shadow: var(--overlay-shadow);
-  z-index: 1000;
-}
-.overlaid__details[open] .overlaid__summary {
-  color: rgb(var(--dark));
-  background-color: transparent;
-}
-
-@media screen and (prefers-reduced-motion: reduce) {
-  .overlaid__details,
-.overlaid__contents,
-.overlaid__marker {
-    transition: none !important;
-  }
-}
-@media (pointer: fine) {
-  .overlaid__summary {
-    color: transparent;
-    background-color: transparent;
-  }
-
-  .overlaid:hover .overlaid__details:not([open]) .overlaid__summary {
-    color: rgb(var(--light));
-    background-color: rgba(var(--dark), 0.8);
-  }
-}
-summary::-webkit-details-marker {
-  display: none;
-}
-
-summary::-moz-details-marker,
-summary::-ms-details-marker,
-summary::-o-details-marker,
-summary::details-marker {
-  display: none;
-}
-
-summary::marker {
-  display: none;
-  content: "";
-}
-
-/*# sourceMappingURL=/image-overlay.ac726082.css.map */
+/*# sourceMappingURL=/base.a73814da.css.map */
