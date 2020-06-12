@@ -15,6 +15,8 @@ h1, h2, h3, h4, h5, h6 {
 .text {
     margin-left: var(--grid-gutter);
     margin-right: var(--grid-gutter);
+    width: 40rem;
+    margin: 0 auto;
 }
 
 .example {
@@ -25,41 +27,45 @@ h1, h2, h3, h4, h5, h6 {
     width: calc(100% + (2 * var(--grid-gutter)));
     padding: calc(2 * var(--grid-gutter));
     background-color: #ededed;
-}
 
-@media screen and (min-width: 576px) {
-}
-
-@media screen and (min-width: 768px) {
-    .text {
-        width: percentage(8 / 12);
-        margin: 0 auto;
-    }
-    .example {
-        width: percentage(10 / 12);
-        margin: 0 auto calc(2 * var(--grid-gutter));
+    figcaption {
+        margin-bottom: calc(var(--grid-gutter) * 2);
     }
 }
 
-@media screen and (min-width: 992px) {
-    .text {
-        width: percentage(7 / 12);
-        margin: 0 auto;
-    }
-    .example {
-        width: percentage(8 / 12);
-    }
-}
+// @media screen and (min-width: 576px) {
+// }
 
-@media screen and (min-width: 1200px) {
-    .text {
-        width: percentage(4 / 12);
-        margin: 0 auto;
-    }
-    .example {
-        width: percentage(5 / 12);
-    }
-}
+// @media screen and (min-width: 768px) {
+//     .text {
+//         width: 32rem;
+//         margin: 0 auto;
+//     }
+//     .example {
+//         width: percentage(10 / 12);
+//         margin: 0 auto calc(2 * var(--grid-gutter));
+//     }
+// }
+
+// @media screen and (min-width: 992px) {
+//     .text {
+//         width: percentage(7 / 12);
+//         margin: 0 auto;
+//     }
+//     .example {
+//         width: percentage(8 / 12);
+//     }
+// }
+
+// @media screen and (min-width: 1200px) {
+//     .text {
+//         width: percentage(4 / 12);
+//         margin: 0 auto;
+//     }
+//     .example {
+//         width: percentage(5 / 12);
+//     }
+// }
 
 .example img {
     max-width: 100%;
