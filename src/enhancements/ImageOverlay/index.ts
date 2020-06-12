@@ -1,5 +1,7 @@
 import { ImageDetails } from '../ImageDetails';
-import { DescriptionAttribute, createIcon, icons } from '../../utilities';
+import {
+	DescriptionAttribute, createIcon, icons, Description, noop,
+} from '../../utilities';
 import { makeDraggable } from './draggable';
 
 export interface ImageOverlayOptions {
@@ -11,6 +13,7 @@ export interface ImageOverlayOptions {
 	draggableClass?: string;
 	draggingClass?: string;
 	resizableClass?: string;
+	onGetDescription?: (descriptions: Description[]) => void;
 }
 
 const ImageOverlayInstances = new Set<ImageOverlay>();
@@ -24,6 +27,7 @@ export class ImageOverlay {
 		draggingClass: 'dragging',
 		draggableClass: 'draggable',
 		resizableClass: 'resizable',
+		onGetDescription: noop,
 	}
 
 	protected constructor(
@@ -40,6 +44,7 @@ export class ImageOverlay {
 			blockName: 'overlaid',
 			displaySummaryText: false,
 			summaryMarker: () => createIcon(icons.details),
+			onGetDescription: this.options.onGetDescription,
 		});
 
 		if (!this.ImageDetails) return;
