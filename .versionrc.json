@@ -1,0 +1,15 @@
+{
+  "scripts": {
+    "postbump": "npm run build"
+  },
+  "types": [
+    { "type": "feat", "section": "✨ Features" },
+    { "type": "fix", "section": "🐛 Bug Fixes" },
+    { "type": "perf", "hidden": false, "section": "⚡️ Performance" },
+    { "type": "docs", "hidden": false, "section": "📝 Documentation" },
+    { "type": "chore", "hidden": true, "section": "🛠 Maintenance" },
+    { "type": "style", "hidden": true },
+    { "type": "refactor", "hidden": false, "section": "♻️ Refactor" },
+    { "type": "test", "hidden": true }
+  ]
+}

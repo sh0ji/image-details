@@ -35,6 +35,7 @@
     "build:docs": "rm -rf public && parcel build site/index.html --dist-dir public --public-url /image-details/ --target docs",
     "build:examples": "rm -rf examples && parcel build site/index.html --dist-dir examples --no-minify --target docs",
     "lint:es": "eslint 'src/**/*.{js,jsx,ts,tsx}' --ignore-path .gitignore",
+    "release": "standard-version --sign",
     "start": "parcel site/index.html",
     "test": "nyc ava"
   },
