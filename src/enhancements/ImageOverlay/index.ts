@@ -62,7 +62,7 @@ export class ImageOverlay {
 
 		this.ImageDetails = await ImageDetails.enhance(this.image, {
 			blockName: 'overlaid',
-			displaySummaryText: true,
+			displaySummaryText: false,
 			summaryMarker: () => this.markerClosed,
 			onGetDescription,
 		});
