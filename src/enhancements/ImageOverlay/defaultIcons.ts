@@ -12,6 +12,7 @@ export const createIcon = (isOpen = false): SVGSVGElement => {
 	svg.setAttribute('role', 'img');
 	svg.setAttribute('viewBox', '0 0 24 24');
 	svg.setAttribute('focusable', 'false');
+	svg.setAttribute('aria-hidden', 'true');
 
 	const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
 	path.setAttribute('fill', 'currentColor');
