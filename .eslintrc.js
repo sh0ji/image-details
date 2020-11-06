@@ -36,7 +36,15 @@ module.exports = {
 			extends: [
 				'plugin:import/typescript',
 				'plugin:@typescript-eslint/recommended',
+				'plugin:@typescript-eslint/recommended-requiring-type-checking',
 			],
+			parserOptions: {
+				tsconfigRootDir: __dirname,
+				project: [
+					'./src/tsconfig.json',
+					'./site/tsconfig.json',
+				],
+			},
 			rules: {
 				indent: 'off',
 				'no-tabs': 'off',
