@@ -61,12 +61,14 @@ export const fetchElement = async (
 	return null;
 };
 
+/* eslint-disable no-shadow */
 /** All of the HTML attributes that can be used to reference a description. */
 export enum DescriptionAttribute {
 	ARIA_DETAILS = 'aria-details',
 	ARIA_DESCRIBEDBY = 'aria-describedby',
 	LONGDESC = 'longdesc',
 }
+/* eslint-enable no-shadow */
 
 export interface Description {
 	attr: DescriptionAttribute | null;
@@ -95,7 +97,6 @@ export const getDescriptionByAttr = async (
 	if (ref) return ref.cloneNode(true) as HTMLElement;
 	return null;
 };
-
 
 /**
  * Get the image's long description.
