@@ -1,11 +1,11 @@
 import { ImageDetails, ImageOverlay } from '../../src';
 
+const noop = () => {};	// eslint-disable-line @typescript-eslint/no-empty-function
+
 ImageOverlay.enhanceAll({
 	selector: '.overlay',
-	onGetDescription: console.log,
-}).then(console.log);
+}).then(console.log, noop);
 
 ImageDetails.enhanceAll({
 	selector: '.details',
-	onGetDescription: console.log,
-}).then(console.log);
+}).then(console.log, noop);
