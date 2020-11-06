@@ -85,8 +85,8 @@ export class ImageDetails {
 		detailsPlacement: 'after-image',
 		displaySummaryText: true,
 		closeOnEscape: true,
-		altSectionHeading: () => '<h2>Alt Text</h2>',
-		descriptionHeading: () => '<h2>Image Description</h2>',
+		altSectionHeading: () => '<h2>Short description</h2>',
+		descriptionHeading: () => '<h2>Long description</h2>',
 		summaryMarker: () => null,
 		summaryText: (hasDescription: boolean): string => {
 			let text = 'Description';
