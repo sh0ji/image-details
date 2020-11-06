@@ -22,6 +22,11 @@ export class ImageModal {
 		ImageModal.Instances.add(this);
 	}
 
+	public enable(): Promise<void> {
+		// TODO
+		// eslint-disable-next-line
+		console.log(this);
+		return Promise.resolve();
 	}
 
 	public static selector = 'img';
