@@ -220,7 +220,10 @@ export class ImageDetails {
 		const text = summaryText(this.hasDescription);
 		const span = document.createElement('span');
 		appendContent(span, text);
-		if (!displaySummaryText) srOnly(span);
+		if (!displaySummaryText) {
+			srOnly(span);
+			summary.setAttribute('title', text);
+		}
 		summary.append(span);
 
 		return summary;
