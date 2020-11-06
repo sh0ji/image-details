@@ -3,7 +3,6 @@ import {
 	Description,
 	getDescription,
 	appendContent,
-	srOnly,
 	noop,
 } from '../../utilities';
 
@@ -218,13 +217,14 @@ export class ImageDetails {
 		const summary = document.createElement('summary');
 		summary.classList.add(this.getClass('summary'));
 		const text = summaryText(this.hasDescription);
-		const span = document.createElement('span');
-		appendContent(span, text);
 		if (!displaySummaryText) {
-			srOnly(span);
+			summary.setAttribute('aria-label', text);
 			summary.setAttribute('title', text);
+		} else {
+			const span = document.createElement('span');
+			appendContent(span, text);
+			summary.append(span);
 		}
-		summary.append(span);
 
 		return summary;
 	}
