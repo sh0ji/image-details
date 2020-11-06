@@ -41,18 +41,18 @@
     "maintained node versions"
   ],
   "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^2.34.0",
-    "@typescript-eslint/parser": "^2.34.0",
-    "ava": "^3.12.1",
-    "eslint": "^6.8.0",
+    "@typescript-eslint/eslint-plugin": "^4.6.1",
+    "@typescript-eslint/parser": "^4.6.1",
+    "ava": "^3.13.0",
+    "eslint": "^7.12.1",
     "eslint-config-airbnb-base": "^14.2.0",
     "eslint-plugin-import": "^2.22.0",
     "fibers": "^5.0.0",
     "modern-normalize": "^1.0.0",
     "nyc": "^15.1.0",
-    "parcel-bundler": "^1.12.4",
-    "sass": "^1.26.11",
+    "parcel": "^2.0.0-nightly.439",
+    "sass": "^1.29.0",
     "standard-version": "^9.0.0",
-    "typescript": "^4.0.3"
+    "typescript": "^4.0.5"
   }
 }
