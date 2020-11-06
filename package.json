@@ -25,14 +25,17 @@
   "source": "src/index.ts",
   "types": "dist/index.d.ts",
   "targets": {
-    "docs": {}
+    "docs": {
+      "distDir": "public",
+      "publicUrl": "/image-details/"
+    }
   },
   "files": [
     "dist"
   ],
   "scripts": {
-    "build": "parcel build src/index.ts",
-    "build:docs": "rm -rf public && parcel build site/index.html --dist-dir public --public-url /image-details/ --target docs",
+    "build": "parcel build src/index.ts --target main --target types",
+    "build:docs": "rm -rf public && parcel build site/index.html --target docs",
     "build:examples": "rm -rf examples && parcel build site/index.html --dist-dir examples --no-minify --target docs",
     "lint:es": "eslint 'src/**/*.{js,jsx,ts,tsx}' --ignore-path .gitignore",
     "release": "standard-version --sign",

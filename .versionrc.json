@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "postbump": "npm run build"
+    "postbump": "npm run build -- --no-cache"
   },
   "types": [
     { "type": "feat", "section": "✨ Features" },
