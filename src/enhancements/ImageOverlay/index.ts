@@ -1,8 +1,7 @@
-import { ImageDetails } from '../ImageDetails';
-import {
-	DescriptionAttribute, createIcon, icons, Description, noop,
-} from '../../utilities';
+import { ImageDetails, ImageDetailsOptions } from '../ImageDetails';
+import { DescriptionAttribute, Description, noop } from '../../utilities';
 import { makeDraggable } from './draggable';
+import { createIcon } from './defaultIcons';
 
 export interface ImageOverlayOptions {
 	/**
@@ -14,6 +13,7 @@ export interface ImageOverlayOptions {
 	draggingClass?: string;
 	resizableClass?: string;
 	onGetDescription?: (descriptions: Description[]) => void;
+	marker?: ImageDetailsOptions['summaryMarker'] | Record<'open' | 'closed', ImageDetailsOptions['summaryMarker']>;
 }
 
 export class ImageOverlay {
@@ -28,6 +28,10 @@ export class ImageOverlay {
 		draggableClass: 'draggable',
 		resizableClass: 'resizable',
 		onGetDescription: noop,
+		marker: {
+			open: createIcon.bind(null, true),
+			closed: createIcon.bind(null, false),
+		},
 	}
 
 	protected constructor(
@@ -37,22 +41,35 @@ export class ImageOverlay {
 		ImageOverlay.Instances.add(this);
 	}
 
+	private get markerOpen(): string | HTMLElement | SVGSVGElement | null {
+		const { marker } = this.options;
+		if ('open' in marker && typeof marker.open === 'function') return marker.open();
+		if (typeof marker === 'function') return marker();
+		return null;
+	}
+
+	private get markerClosed(): string | HTMLElement | SVGSVGElement | null {
+		const { marker } = this.options;
+		if ('closed' in marker && typeof marker.closed === 'function') return marker.closed();
+		if (typeof marker === 'function') return marker();
+		return null;
 	}
 
 	public async enable(): Promise<void> {
 		if (this.enabled) return;
 
+		const { onGetDescription, draggingClass } = this.options;
+
 		this.ImageDetails = await ImageDetails.enhance(this.image, {
 			blockName: 'overlaid',
-			displaySummaryText: false,
-			summaryMarker: () => createIcon(icons.details),
-			onGetDescription: this.options.onGetDescription,
+			displaySummaryText: true,
+			summaryMarker: () => this.markerClosed,
+			onGetDescription,
 		});
 
 		if (!this.ImageDetails) return;
 
 		const { details, summary } = this.ImageDetails;
-		const { draggingClass } = this.options;
 
 		makeDraggable({
 			el: details,
@@ -96,16 +113,16 @@ export class ImageOverlay {
 	private onToggle = (): void => {
 		if (!this.ImageDetails) return;
 		const { draggableClass, resizableClass } = this.options;
-		const { details, marker } = this.ImageDetails;
+		const { details } = this.ImageDetails;
 		if (details.open) {
 			details.classList.add(draggableClass);
 			details.classList.add(resizableClass);
-			marker.innerHTML = createIcon(icons.close).outerHTML;
+			this.ImageDetails.updateMarker(this.markerOpen);
 		} else {
 			details.classList.remove(draggableClass);
 			details.classList.remove(resizableClass);
 			details.removeAttribute('style');
-			marker.innerHTML = createIcon(icons.details).outerHTML;
+			this.ImageDetails.updateMarker(this.markerClosed);
 		}
 	}
 
