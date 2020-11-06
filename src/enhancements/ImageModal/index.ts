@@ -1,4 +1,4 @@
-const ImageModalInstances = new Set<ImageModal>();
+import { DescriptionAttribute } from '../../utilities';
 
 interface EnhanceAllOptions {
 	selector?: string;
@@ -13,17 +13,21 @@ interface ImageModalOptions {
  * a modal dialog interface.
  */
 export class ImageModal {
+	private static Instances = new Set<ImageModal>();
+
 	protected constructor(
 		public image: HTMLImageElement,
 		public options: Required<ImageModalOptions>,
 	) {
-		ImageModalInstances.add(this);
+		ImageModal.Instances.add(this);
+	}
+
 	}
 
 	public static selector = 'img';
 
 	public static get instances(): ImageModal[] {
-		return Array.from(ImageModalInstances);
+		return Array.from(ImageModal.Instances);
 	}
 
 	public static async enhance(

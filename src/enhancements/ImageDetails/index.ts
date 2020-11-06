@@ -63,8 +63,6 @@ export interface ImageDetailsOptions {
 	onGetDescription?: (descriptions: Description[]) => void;
 }
 
-const ImageDetailsInstances = new Set<ImageDetails>();
-
 export class ImageDetails {
 	public description?: string | Node | null;
 	public container: HTMLElement;
@@ -80,6 +78,7 @@ export class ImageDetails {
 	// private hasAdjacentDetails = false;
 	// private existingDetailsDescription = false;
 
+	private static Instances = new Set<ImageDetails>();
 	public static baseName = 'image-details';
 	public static defaultOptions: Required<ImageDetailsOptions> = {
 		addAltText: true,
@@ -113,7 +112,7 @@ export class ImageDetails {
 
 		this.container.append(this.image, this.details);
 
-		ImageDetailsInstances.add(this);
+		ImageDetails.Instances.add(this);
 	}
 
 	public get hasDescription(): boolean {
@@ -153,7 +152,7 @@ export class ImageDetails {
 			(this.originalImage.parentNode || document).insertBefore(this.originalDetails, refChild);
 		}
 		this.container.remove();
-		ImageDetailsInstances.delete(this);
+		ImageDetails.Instances.delete(this);
 		return this;
 	}
 
@@ -293,6 +292,6 @@ export class ImageDetails {
 	}
 
 	public static get instances(): ImageDetails[] {
-		return Array.from(ImageDetailsInstances);
+		return Array.from(ImageDetails.Instances);
 	}
 }

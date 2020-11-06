@@ -16,11 +16,11 @@ export interface ImageOverlayOptions {
 	onGetDescription?: (descriptions: Description[]) => void;
 }
 
-const ImageOverlayInstances = new Set<ImageOverlay>();
-
 export class ImageOverlay {
 	private enabled = false;
 	public ImageDetails: ImageDetails | null = null;
+
+	private static Instances = new Set<ImageOverlay>();
 
 	public static defaultOptions: Required<ImageOverlayOptions> = {
 		closeAllOnEscape: true,
@@ -34,7 +34,9 @@ export class ImageOverlay {
 		public image: HTMLImageElement,
 		public options: Required<ImageOverlayOptions>,
 	) {
-		ImageOverlayInstances.add(this);
+		ImageOverlay.Instances.add(this);
+	}
+
 	}
 
 	public async enable(): Promise<void> {
@@ -81,7 +83,7 @@ export class ImageOverlay {
 	public destroy(): this {
 		if (this.enabled) this.disable();
 		if (this.ImageDetails) this.ImageDetails.destroy();
-		ImageOverlayInstances.delete(this);
+		ImageOverlay.Instances.delete(this);
 		return this;
 	}
 
@@ -136,6 +138,6 @@ export class ImageOverlay {
 	}
 
 	public static get instances(): ImageOverlay[] {
-		return Array.from(ImageOverlayInstances);
+		return Array.from(ImageOverlay.Instances);
 	}
 }
