@@ -264,6 +264,14 @@ export class ImageDetails {
 		return section;
 	}
 
+	public updateMarker(marker: ReturnType<NonNullable<ImageDetailsOptions['summaryMarker']>>): this {
+		while (this.marker.firstChild) {
+			this.marker.removeChild(this.marker.firstChild);
+		}
+		if (marker) this.marker.append(marker);
+		return this;
+	}
+
 	private getClass(element: string, asSelector = false): string {
 		const { blockName } = this.options;
 		const className = `${blockName}__${element}`;
