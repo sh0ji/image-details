@@ -48,7 +48,6 @@
     "eslint-config-airbnb-base": "^14.2.0",
     "eslint-plugin-import": "^2.22.0",
     "fibers": "^5.0.0",
-    "modern-normalize": "^1.0.0",
     "nyc": "^15.1.0",
     "parcel": "^2.0.0-nightly.439",
     "sass": "^1.29.0",
