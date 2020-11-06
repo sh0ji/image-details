@@ -115,33 +115,29 @@ export class Draggable {
 
 	private moveWithKeyboard = (e: KeyboardEvent): void => {
 		const mod = e.shiftKey ? 20 : 1;
-		const step = mod * 1;
-		let left = 0;
-		let top = 0;
-		switch (e.key) {
-			case 'ArrowRight':
-				left = 5;
-				break;
-			case 'ArrowLeft':
-				left = -5;
-				break;
-			case 'ArrowDown':
-				top = 5;
-				break;
-			case 'ArrowUp':
-				top = -5;
-				break;
-			case 'Home':
-				e.preventDefault();
-				this.resetPosition();
-				return;
-			default:
-				return;
-		}
-
+		const pos = Draggable.getKeyboardPosition(e.key, 5 * mod);
+		if (!pos) return;
 		e.preventDefault();
-		this.move(left * step, top * step);
+		if (pos === 'reset') this.resetPosition();
+		else {
+			const { left, top } = pos;
+			this.move(left, top);
+		}
 	};
+
+	private static getKeyboardPosition(
+		key: KeyboardEvent['key'],
+		step: number,
+	): { top: number; left: number } | 'reset' | null {
+		switch (key) {
+			case 'ArrowRight': return { left: step, top: 0 };
+			case 'ArrowLeft': return { left: -step, top: 0 };
+			case 'ArrowDown': return { left: 0, top: step };
+			case 'ArrowUp': return { left: 0, top: -step };
+			case 'Home': return 'reset';
+			default: return null;
+		}
+	}
 
 	public static defaultOptions: Required<DraggableOptions> = {
 		excludedElements: [],
@@ -153,12 +149,10 @@ export class Draggable {
 		onRelease: noop,
 	};
 
-	public static makeDraggable({ el, keyboardEl, ...options }: DraggableOptions & {
+	public static makeDraggable = ({ el, keyboardEl, ...options }: DraggableOptions & {
 		el: HTMLElement;
 		keyboardEl: HTMLElement | null;
-	}): Draggable {
-		return new Draggable(el, keyboardEl, options);
-	}
+	}): Draggable => new Draggable(el, keyboardEl, options);
 }
 
 export const { makeDraggable } = Draggable;
