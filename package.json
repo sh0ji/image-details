@@ -24,13 +24,16 @@
   "main": "dist/index.js",
   "source": "src/index.ts",
   "types": "dist/index.d.ts",
+  "targets": {
+    "docs": {}
+  },
   "files": [
     "dist"
   ],
   "scripts": {
     "build": "parcel build src/index.ts",
-    "build:docs": "rm -rf public && parcel build site/index.html --out-dir public --public-url /image-details/",
-    "build:examples": "rm -rf examples && parcel build site/index.html --out-dir examples --no-minify",
+    "build:docs": "rm -rf public && parcel build site/index.html --dist-dir public --public-url /image-details/ --target docs",
+    "build:examples": "rm -rf examples && parcel build site/index.html --dist-dir examples --no-minify --target docs",
     "lint:es": "eslint 'src/**/*.{js,jsx,ts,tsx}' --ignore-path .gitignore",
     "start": "parcel site/index.html",
     "test": "nyc ava"
