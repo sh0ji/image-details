@@ -1,2 +1,2 @@
 :root{--grid-gutter:1rem}main{padding:var(--grid-gutter) var(--grid-gutter) 0}h1,h2,h3,h4,h5,h6{margin-top:0}.text{width:40rem;margin:0 auto}.example{display:flex;flex-direction:column;align-items:center;margin-left:calc(var(--grid-gutter)*-1);width:calc(100% + var(--grid-gutter)*2);padding:calc(var(--grid-gutter)*2);background-color:#ededed}.example figcaption{margin-bottom:calc(var(--grid-gutter)*2)}.example img{max-width:100%}.sr-only{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
-/*# sourceMappingURL=index.02c59b38.css.map */
+/*# sourceMappingURL=index.254b4201.css.map */
