@@ -1,0 +1,38 @@
+version: 2
+updates:
+- package-ecosystem: npm
+  directory: "/"
+  schedule:
+    interval: monthly
+    time: "10:00"
+  open-pull-requests-limit: 10
+  ignore:
+  - dependency-name: "@typescript-eslint/eslint-plugin"
+    versions:
+    - 4.11.1
+    - 4.14.1
+  - dependency-name: sass
+    versions:
+    - 1.32.0
+    - 1.32.5
+  - dependency-name: parcel
+    versions:
+    - 2.0.0-nightly.500
+    - 2.0.0-nightly.560
+  - dependency-name: "@typescript-eslint/parser"
+    versions:
+    - 4.11.1
+    - 4.14.1
+  - dependency-name: eslint
+    versions:
+    - 7.16.0
+    - 7.19.0
+  - dependency-name: ava
+    versions:
+    - 3.14.0
+  - dependency-name: typescript
+    versions:
+    - 4.1.3
+  - dependency-name: standard-version
+    versions:
+    - 9.1.0
